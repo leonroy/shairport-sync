@@ -5,8 +5,6 @@ from pathlib import Path
 import re
 import subprocess
 
-from smoke_receiver import smoke
-
 IMAGE = 'ghcr.io/leonroy/shairport-sync'
 SOURCE = 'https://github.com/leonroy/shairport-sync'
 PLATFORMS = {'linux/amd64', 'linux/arm64'}
@@ -98,8 +96,6 @@ def publish():
     if manifest is None:
         raise RuntimeError('Commit image is missing after publishing')
     digest = validate(manifest, sha, expected)
-    for platform, child in expected.items():
-        smoke(f'{IMAGE}@{child}', platform)
     head = run('git', 'ls-remote', SOURCE + '.git', 'refs/heads/development').split()
     development_head = head[0] if head else ''
     if can_promote(os.environ['GITHUB_EVENT_NAME'], os.environ['GITHUB_REF'], sha, development_head):

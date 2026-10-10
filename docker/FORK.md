@@ -9,6 +9,7 @@ GitHub Actions builds and tests images for Linux AMD64 and ARM64.
 Each architecture builds on a native GitHub-hosted runner.
 The workflow compiles Classic AirPlay and AirPlay 2 with metadata enabled and disabled.
 Both image builds run `make check` and test receiver startup in both modes.
+Before publishing the combined manifest, each native runner downloads and tests its pushed image by digest.
 The tests also make sure that the receiver and NQPTP use the same shared-memory interface.
 
 The registry is `ghcr.io/leonroy/shairport-sync`.
