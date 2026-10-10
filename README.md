@@ -9,6 +9,19 @@ Metadata such as artist information and cover art can be requested and provided 
 
 Shairport Sync does not support AirPlay video or photo streaming.
 
+# Docker images from this fork
+
+This fork publishes Docker images to `ghcr.io/leonroy/shairport-sync` through GitHub Actions.
+A push or merge to `development` builds and tests Linux AMD64 and ARM64 images.
+If tests pass and the source commit still matches the branch head, the workflow updates the `:development` and `:latest` tags.
+A push or merge to `master` does not publish an image to GHCR.
+The `:latest` tag in this fork follows tested `development` code.
+
+The `build/telemetry-ghcr` branch publishes tested images with commit tags for review without changing `:latest`.
+Pull request checks build and test images without publishing.
+The inherited Docker Hub publishing workflow skips this fork.
+See [docker/FORK.md](docker/FORK.md) for build tests, metadata controls, updates, and rollback instructions.
+
 # Quick Start
 * If you are updating from a previous version of Shairport Sync, please visit the [release notes](RELEASENOTES.md) for possible breaking changes.
 * A building guide is available [here](BUILD.md).

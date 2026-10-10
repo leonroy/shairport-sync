@@ -103,7 +103,7 @@ RUN ../configure --sysconfdir=/etc --with-alsa --with-pulseaudio --with-soxr --w
         --with-airplay-2 --with-metadata --with-metadata-pipe --with-dummy --with-pipe --with-dbus-interface \
         --with-stdout --with-mpris-interface --with-mqtt-client \
         --with-convolution --with-pipewire
-RUN make
+RUN make && make check
 RUN DESTDIR=install make install
 WORKDIR /
 ##### SPS END #####
