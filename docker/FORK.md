@@ -3,6 +3,8 @@
 This fork adds AAC bitrate and receiver counters from upstream PR #2305.
 It follows the upstream `development` branch and currently builds Shairport Sync `5.6-dev`.
 The image includes NQPTP from its `development` branch with a matching shared-memory interface.
+Each initial image build refreshes the NQPTP stage so it fetches current upstream code.
+Other build stages retain their cache.
 It supports both Classic AirPlay and AirPlay 2 with the upstream startup script.
 
 GitHub Actions builds and tests images for Linux AMD64 and ARM64.
@@ -15,6 +17,8 @@ The tests also make sure that the receiver and NQPTP use the same shared-memory 
 The registry is `ghcr.io/leonroy/shairport-sync`.
 Each publishing run retains its architecture build tags and publishes a `sha-<full-commit-sha>` image after testing.
 An existing commit tag cannot change to different runtime images.
+Successful image jobs pass their tested digest references to the publishing job.
+Rerunning only the publishing job reuses those references even when its run attempt changes.
 The Actions summary contains the commit tag and manifest digest.
 A manifest digest identifies one set of images.
 

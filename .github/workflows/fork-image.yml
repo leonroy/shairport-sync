@@ -60,6 +60,9 @@ jobs:
     permissions:
       contents: read
       packages: write
+    outputs:
+      amd64_image: ${{ steps.published.outputs.amd64_image }}
+      arm64_image: ${{ steps.published.outputs.arm64_image }}
     strategy:
       fail-fast: false
       matrix:
@@ -78,6 +81,7 @@ jobs:
           load: true
           tags: shairport-sync:ci-${{ matrix.arch }}
           build-args: NQPTP_BRANCH=development
+          no-cache-filters: nqptp
           labels: |
             org.opencontainers.image.source=https://github.com/leonroy/shairport-sync
             org.opencontainers.image.revision=${{ github.sha }}
@@ -111,12 +115,15 @@ jobs:
           cache-from: type=gha,scope=fork-${{ matrix.arch }}
           provenance: false
       - name: Smoke-test published architecture image
+        id: published
         if: github.event_name == 'push'
         env:
+          ARCH: ${{ matrix.arch }}
           RECEIVER_IMAGE: ghcr.io/leonroy/shairport-sync:build-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.arch }}
         run: |
           image_digest=$(docker buildx imagetools inspect "$RECEIVER_IMAGE" --format '{{.Manifest.Digest}}')
           python3 .github/scripts/smoke_receiver.py "ghcr.io/leonroy/shairport-sync@$image_digest" linux/${{ matrix.arch }}
+          echo "${ARCH}_image=ghcr.io/leonroy/shairport-sync@$image_digest" >> "$GITHUB_OUTPUT"
 
   publish:
     name: Publish tested receiver manifest
@@ -138,4 +145,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Publish commit image and promote current development
+        env:
+          AMD64_IMAGE: ${{ needs.image.outputs.amd64_image }}
+          ARM64_IMAGE: ${{ needs.image.outputs.arm64_image }}
         run: python3 .github/scripts/fork_publish.py

@@ -75,8 +75,10 @@ def publish():
     sha = os.environ['GITHUB_SHA']
     if not re.fullmatch(r'[0-9a-f]{40}', sha):
         raise ValueError('A full source commit is required')
-    build = f"build-{os.environ['GITHUB_RUN_ID']}-{os.environ['GITHUB_RUN_ATTEMPT']}"
-    refs = [f'{IMAGE}:{build}-{arch}' for arch in ('amd64', 'arm64')]
+    refs = [os.environ.get(f'{arch.upper()}_IMAGE', '') for arch in ('amd64', 'arm64')]
+    for arch, ref in zip(('amd64', 'arm64'), refs):
+        if not ref.startswith(IMAGE + '@') or not DIGEST.fullmatch(ref[len(IMAGE) + 1:]):
+            raise ValueError(f'Expected a tested digest reference for {arch}')
     expected = {}
     for arch, ref in zip(('amd64', 'arm64'), refs):
         manifest = inspect(ref)
