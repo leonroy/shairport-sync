@@ -1,6 +1,6 @@
 # Receiver images from this fork
 
-This fork adds AAC bitrate and receiver counters from upstream PR #2305.
+This fork adds AAC/ALAC input bitrate and receiver counters from upstream PR #2305.
 It follows the upstream `development` branch and currently builds Shairport Sync `5.6-dev`.
 The image includes NQPTP from its `development` branch with a matching shared-memory interface.
 Each initial image build refreshes the NQPTP stage so it fetches current upstream code.
@@ -33,7 +33,7 @@ Pull request runs build and test images without publishing.
 The inherited Docker Hub workflow skips this fork, which uses GHCR instead.
 Other upstream build workflows remain enabled.
 
-The AAC bitrate and receiver counters use the existing metadata controls from Shairport Sync.
+The input bitrate and receiver counters use the existing metadata controls from Shairport Sync.
 Upstream PR #2305 adds no separate flag for these measurements.
 The code requires metadata support at build time through flags such as `--with-metadata` and `--with-metadata-pipe`.
 At runtime, metadata is enabled by default when the build includes it.
